@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Restaurant Layout</title>
+    <style>
+        .md-wrap{
+            background: #FFFFFF;
+            box-shadow: 0px 187px 75px rgba(0, 0, 0, 0.01), 0px 105px 63px rgba(0, 0, 0, 0.05), 0px 47px 47px rgba(0, 0, 0, 0.09), 0px 12px 26px rgba(0, 0, 0, 0.1), 0px 0px 0px rgba(0, 0, 0, 0.1);
+            border-radius: 20px !important;
+            padding: 15px 30px;
+            margin-top: 30px;
+        }
+        .resto-layout {
+            width: 100%; 
+            max-width: 950px; 
+            height: 680px; 
+            position: relative;
+            background-color: #0f0224;
+            padding: 20px;
+            margin: 0 auto; 
+            border-radius: 20px;
+        }
+
+        .resto-layout .area {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: #fff;
+            padding: 10px;
+        }
+
+        .resto-layout .grid-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px; 
+            text-align: center;
+        }
+
+        .resto-layout .grid-item.empty {
+            width: 50px !important;
+            height: 35px !important;
+            border: none;
+            background: none !important;
+            color: #0f0224;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+
+        .resto-layout .table {
+            background-color: #000000;
+            border: 1px solid #f5efef;
+            border-radius: 10%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            height: 30px; 
+            width: 60px;
+            gap: 0px;
+            padding: 0px;
+            box-shadow: 
+                4px 4px 12px rgba(255, 255, 255, 0.5), /* Light outer shadow for highlight */
+                -4px -4px 12px rgba(116, 125, 136, 0.25), /* Subtle shadow on top left */
+                0px 0px 8px rgba(0, 0, 0, 0.5); /* Strong shadow for depth */
+            transition: transform 0.2s; /* Add a transition for hover effect */
+        }
+
+        .resto-layout .table:hover {
+            transform: translateY(-2px); /* Lift the table slightly on hover */
+        }
+
+        .resto-layout .backyard, 
+        .resto-layout .side, 
+        .resto-layout .inside, 
+        .resto-layout .front, 
+        .resto-layout .parking, 
+        .resto-layout .bar, 
+        .resto-layout .pool, 
+        .resto-layout .kitchen, 
+        .resto-layout .wc {
+            display: grid;
+            justify-items: center;
+            box-shadow: 4px 4px 6px 0 rgb(255 255 255 / 50%), -4px -4px 6px 0 rgb(116 125 136 / 25%), inset -4px -4px 6px 0 rgb(255 255 255 / 20%), inset 4px 4px 6px 0 rgb(0 0 0 / 28%);
+        }
+
+        .resto-layout .backyard {
+            width: 600px;
+            height: 210px;
+            top: 40px;
+            left: 50px;
+            background: linear-gradient(135deg, #8cceff, #0a2532);
+            z-index: 999;
+            grid-template-columns: repeat(7, 80px);
+            grid-template-rows: repeat(5, 40px);
+            border-radius: 20px 20px 0px 0px;
+        }
+
+        .resto-layout .side {
+            width: 180px;
+            height: 280px;
+            top: 265px;
+            left: 50px;
+            background: linear-gradient(135deg, #ffcc99, #c68a00);
+            grid-template-columns: repeat(2, 80px);
+            grid-template-rows: repeat(7, 40px);
+        }
+
+        .resto-layout .inside {
+            width: 180px;
+            height: 280px;
+            top: 265px;
+            left: 250px;
+            background: linear-gradient(135deg, #ff9999, #37a2bb);
+            grid-template-columns: repeat(2, 80px);
+            grid-template-rows: repeat(6, 45px);
+        }
+
+        .resto-layout .front {
+            width: 670px;
+            height: 100px;
+            top: 560px;
+            left: 50px;
+            background: linear-gradient(135deg, #9999ff, #dfac94);
+            grid-template-columns: repeat(7, 95px); 
+            grid-template-rows: repeat(2, 50px);
+            border-radius: 0px 0px 0px 20px;
+        }
+
+        .resto-layout .parking {
+            width: 160px;
+            height: 250px;
+            top: 415px;
+            right: 70px;
+            background: linear-gradient(135deg, #bdfaff, #000000);            
+            grid-template-columns: repeat(2, 80px);
+            grid-template-rows: repeat(4, 50px);
+            border-radius: 0px 20px 20px 0px;
+        }
+
+        .resto-layout .bar {
+            width: 90px;
+            height: 275px;
+            top: 270px;
+            left: 450px;
+            background: linear-gradient(135deg, #dbdbf1, #FFCC68);            
+            z-index: 999;
+            grid-template-columns: repeat(1, 80px);
+            grid-template-rows: repeat(2, auto);
+        }
+
+        .resto-layout .pool {
+            width: 160px;
+            height: 150px;
+            top: 395px;
+            right: 250px;
+            background: linear-gradient(135deg, #f3c7ec, #aff6f9);            
+            grid-template-columns: repeat(3, 40px);
+            grid-template-rows: repeat(3, 35px);
+        }
+
+        .resto-layout .kitchen {
+            width: 160px;
+            height: 190px;
+            top: 115px;
+            right: 250px;
+            align-items: flex-end;
+            background: linear-gradient(135deg, #ffffff, #7ce55a);
+            border-radius: 0px 20px 0px 0px;
+        }
+
+        .resto-layout .wc {
+            width: 160px;
+            height: 50px;
+            top: 325px;
+            right: 250px;
+            background: linear-gradient(135deg, #cc99ff, #caffe2);        
+        }
+
+        /* Responsive Design for Tablets */
+        @media (max-width: 768px) {
+
+            .resto-layout {
+                width: 100%; /* Ensure it spans full width */
+                max-width: 700px; /* Adjust max width for tablets */
+                height: auto; /* Allow height to adjust based on content */
+                padding: 15px; /* Slightly reduce padding */
+                margin: 0 10px; /* Provide small margin on sides for tablets */
+                border-radius: 15px; /* Adjust border radius for smaller screens */
+            }
+
+            .resto-layout .backyard, 
+            .resto-layout .side, 
+            .resto-layout .inside, 
+            .resto-layout .front, 
+            .resto-layout .bar {
+                position: relative;
+                top: auto;
+                left: auto;
+            }
+
+            .resto-layout .backyard {
+                width: 530px;
+                height: 200px;
+                grid-template-columns: repeat(7, 75px);
+                grid-template-rows: repeat(5, 40px);
+            }
+
+            .resto-layout .mid-area, 
+            .resto-layout .bottom-area {
+                display: flex;
+            }
+
+            .resto-layout .side, 
+            .resto-layout .inside {
+                width: 150px;
+            }
+
+            .resto-layout .front {
+                bottom: 0px;
+                width: 602px;
+                grid-template-columns: repeat(7, 1fr);
+                grid-template-rows: repeat(2, auto);
+            }
+
+            .resto-layout .bar {
+                width: 50px;
+                height: 280px;
+            }
+
+            .resto-layout .kitchen, 
+            .resto-layout .wc {
+                display: none !important;
+            }
+
+            .resto-layout .pool {
+                top: 220px;
+                right: 0px;
+                height: 130px;
+                width: 120px;
+                grid-template-columns: repeat(3, 35px);
+            }
+
+            .resto-layout .parking {
+                width: 130px;
+                height: 150px;
+                top: 350px;
+                right: 0px;
+                grid-template-columns: repeat(2, 70px);
+                grid-template-rows: repeat(4, 35px);
+                border-radius: 0px 0px 0px 0px;
+            }
+        }
+
+    </style> 
+
+        
+</head>
+<body>
+    <div class="wrap">       
+         <div class="moondog-booking-content md-wrap">    
+            <div class="resto-layout">
+                <!-- Backyard Area -->
+                <div class="area backyard">
+                    <div class="grid-item table">905</div>
+                    <div class="grid-item table">906</div>
+                    <div class="grid-item empty"></div>
+                    <div class="grid-item table">907</div>
+                    <div class="grid-item empty"></div>
+                    <div class="grid-item empty"></div>
+                    <div class="grid-item empty"></div>
+
+                    <div class="grid-item table">904</div>
+                    <div class="grid-item empty">Backyard</div>
+                    <div class="grid-item table">808</div>
+                    <div class="grid-item empty"></div>
+                    <div class="grid-item table">809</div>
+                    <div class="grid-item table">810</div>
+                    <div class="grid-item table">811</div>
+
+                    <div class="grid-item table">903</div>
+                    <div class="grid-item empty"></div>
+                    <div class="grid-item table">804</div>
+                    <div class="grid-item empty"></div>
+                    <div class="grid-item table">805</div>
+                    <div class="grid-item table">806</div>
+                    <div class="grid-item table">807</div>
+
+                    <div class="grid-item table">902</div>
+                    <div class="grid-item empty"></div>
+                    <div class="grid-item table">800</div>
+                    <div class="grid-item empty"></div>
+                    <div class="grid-item table">801</div>
+                    <div class="grid-item table">802</div>
+                    <div class="grid-item table">803</div>
+
+                    <div class="grid-item table">901</div>
+                    <div class="grid-item empty"></div>
+                    <div class="grid-item table">1000</div>
+                    <div class="grid-item empty"></div>
+                    <div class="grid-item empty"></div>
+                    <div class="grid-item empty"></div>
+                    <div class="grid-item empty"></div>
+                </div>
+
+                <!-- Side Area -->
+                <div class="mid-area">
+
+                    <div class="area side">
+                        <div class="grid-item table">900</div>
+                        <div class="grid-item empty">Side</div>
+
+                        <div class="grid-item table">710</div>
+                        <div class="grid-item table">711</div>
+
+                        <div class="grid-item table">708</div>
+                        <div class="grid-item table">709</div>
+
+                        <div class="grid-item table">706</div>
+                        <div class="grid-item table">707</div>
+
+                        <div class="grid-item table">704</div>
+                        <div class="grid-item table">705</div>
+
+                        <div class="grid-item table">702</div>
+                        <div class="grid-item table">703</div>
+
+                        <div class="grid-item table">700</div>
+                        <div class="grid-item table">701</div>
+                    </div>
+
+                    <!-- Inside Area -->
+                    <div class="area inside">
+                        <div class="grid-item table">100</div>
+                        <div class="grid-item empty">Inside</div>
+
+                        <div class="grid-item table">102</div>
+                        <div class="grid-item table">103</div>
+
+                        <div class="grid-item table">104</div>
+                        <div class="grid-item table">105</div>
+
+                        <div class="grid-item table">106</div>
+                        <div class="grid-item table">107</div>
+
+                        <div class="grid-item table">108</div>
+                        <div class="grid-item table">109</div>          
+
+                        <div class="grid-item table">600</div>
+                        <div class="grid-item table">602</div>
+                    </div>
+
+                    <!-- Bar Area -->
+                    <div class="area bar">            
+                        <div class="grid-item table">200</div>
+                        <div class="grid-item empty">Bar</div>
+                        <div class="grid-item table">206</div>
+                    </div>
+                    <!-- Kitchen Area -->
+                    <div class="area kitchen">
+                        <div class="grid-item empty">Kitchen</div>
+                    </div>
+
+                    <!-- WC Area -->
+                    <div class="area wc">
+                        <div class="grid-item empty">WC</div>
+                    </div>
+                    <!-- Pool Area -->
+                    <div class="area pool">
+                        <div class="grid-item table">300</div>
+                        <div class="grid-item empty"></div>
+                        <div class="grid-item table">302</div>
+
+                        <div class="grid-item empty"></div>
+                        <div class="grid-item table">301</div>
+                        <div class="grid-item empty">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pool</div>
+
+                        <div class="grid-item empty"></div>
+                        <div class="grid-item empty"></div>
+                        <div class="grid-item table">304</div>
+                    </div>
+                </div>
+
+                <div class="bottom-area">
+                    <!-- Front Area -->
+                    <div class="area front">
+                        <!-- Table positions for the Front Area -->
+                        <div class="grid-item table">503</div>
+                        <div class="grid-item table">502</div>
+                        <div class="grid-item empty">Front</div>
+                        <div class="grid-item table">500</div>
+                        <div class="grid-item empty">Front</div>
+                        <div class="grid-item table">400</div>
+                        <div class="grid-item table">401</div>  
+
+                        <div class="grid-item table">504</div>
+                        <div class="grid-item table">505</div>
+                        <div class="grid-item table">506</div>
+                        <div class="grid-item table">508</div>
+                        <div class="grid-item table">404</div>
+                        <div class="grid-item table">403</div>
+                        <div class="grid-item table">402</div>
+                    </div>
+
+                    <!-- Parking Area -->
+                    <div class="area parking">
+                        <div class="grid-item table">P7</div>
+                        <div class="grid-item table">P1</div>
+
+                        <div class="grid-item empty">Parking</div>
+                        <div class="grid-item table">P2</div>
+
+                        <div class="grid-item table">P6</div>
+                        <div class="grid-item table">P3</div>
+
+                        <div class="grid-item table">P5</div>
+                        <div class="grid-item table">P4</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
