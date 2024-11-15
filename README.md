@@ -69,3 +69,7 @@ The restaurant layout features tables and sections with unique identifiers for b
 - **Customizable Layout**: Easily adapt the layout for different restaurant sizes and styles.
 - **Responsive Design**: Optimized for all screen sizes, from tablets to desktops.
 - **Efficient Table Management**: Easily assign tables and manage bookings.
+
+  
+### **Made with ❤️ by [Shivani Gupta](https://github.com/shivaniguptas206)**
+
